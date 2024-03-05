@@ -1,0 +1,36 @@
+#Server
+server:
+  port: ${APPLICATION_PORT:8088}
+#Database Configuration
+spring:
+  datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5431}/${DATABASE_NAME:pxelom}?currentSchema=public
+      username: ${DATABASE_USERNAME:pxelom}
+      password: ${DATABASE_PASSWORD:pxelom}
+  #FlyWay
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    placeholder-replacement: false
+    out-of-order: true
+    mixed: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  sql:
+    init:
+      continue-on-error: true
+      mode: always
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 1m
+#Logging
+logging:
+  level:
+    org.springframework.web: INFO
+    org.springframework.web.client: TRACE
+    com.zaxxer.hikari : DEBUG
