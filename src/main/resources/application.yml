@@ -4,10 +4,12 @@ server:
 #Database Configuration
 spring:
   datasource:
-      driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5431}/${DATABASE_NAME:pxelom}?currentSchema=public
-      username: ${DATABASE_USERNAME:pxelom}
-      password: ${DATABASE_PASSWORD:pxelom}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5430}/${DATABASE_NAME:user_management}?currentSchema=public
+    username: ${DATABASE_USERNAME:user_management}
+    password: ${DATABASE_PASSWORD:user_management}
+  main:
+    allow-circular-references: true
   #FlyWay
   flyway:
     baseline-on-migrate: true
@@ -16,21 +18,32 @@ spring:
     placeholder-replacement: false
     out-of-order: true
     mixed: true
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  sql:
-    init:
-      continue-on-error: true
-      mode: always
-  web:
-    resources:
-      cache:
-        cachecontrol:
-          max-age: 1m
 #Logging
 logging:
   level:
     org.springframework.web: INFO
     org.springframework.web.client: TRACE
-    com.zaxxer.hikari : DEBUG
+    com.zaxxer.hikari: DEBUG
+    org.springframework.security: TRACE
+#Security
+security:
+  publicResources: |
+    /swagger-ui/**,/v3/api-docs,/v3/api-docs/**,
+    /actuator/**,
+    /auth/**
+  jwt:
+    secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration: 86400000 # a day
+    refresh-token:
+      expiration: 604800000 # 7 days
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+hazelcast:
+  clusterAddress: ${HAZELCAST_CLUSTER_ADDRESS:localhost:5701}
+  network:
+    join:
+      multicast:
+        enabled: true
